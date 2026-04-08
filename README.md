@@ -1,15 +1,14 @@
 # Fixora
 
-Fixora is a professional, multi-page frontend for a home services marketplace.  
-It is built with React + TypeScript using a layered architecture so UI growth does not break domain and application boundaries.
+Fixora is a light-themed, multi-page React frontend for a home services marketplace.
+It is designed for clean UX, simple navigation, and maintainable code with a practical folder structure.
 
-## Highlights
+## Live Scope
 
-- Light-themed, responsive multi-page website
-- Clean route structure (`Home`, `Services`, `How It Works`, `About`)
-- Layered architecture (`domain`, `application`, `infrastructure`, `presentation`)
-- Reusable component system and typed data flow
-- Production-ready lint and build setup with Vite + ESLint + TypeScript
+- Responsive website with multiple pages
+- Service cards powered by real image assets
+- Clean routing with React Router
+- Vercel-ready SPA deployment config
 
 ## Tech Stack
 
@@ -24,61 +23,37 @@ It is built with React + TypeScript using a layered architecture so UI growth do
 
 ## Project Structure
 
+The app now uses 3 primary folders under `src`:
+
 ```text
 src
-├── app
-│   ├── App.tsx
-│   └── routes.tsx
-├── domain
-│   ├── entities
-│   └── interfaces
-├── application
-│   ├── dto
-│   ├── services
-│   └── use-cases
-├── infrastructure
-│   └── repositories
-├── presentation
-│   ├── components
-│   │   ├── common
-│   │   ├── features
-│   │   └── layout
-│   ├── hooks
-│   └── pages
-├── shared
-│   ├── constants
-│   └── utils
-└── main.tsx
+├── assets/        # service images and future media
+├── components/    # shared app logic, UI components, routes, hooks, utilities
+│   ├── common/
+│   ├── data/
+│   ├── features/
+│   ├── hooks/
+│   ├── layout/
+│   └── utils/
+└── pages/         # route-level page components
 ```
 
-## Architecture
+## Routes
 
-### Domain Layer
+- `/` - Home
+- `/services` - Services catalog
+- `/how-it-works` - Booking journey
+- `/about` - Product overview
+- `*` - Not Found page
 
-- Holds business entities and contracts
-- No framework-specific dependencies
+## How Data Works
 
-### Application Layer
-
-- Contains use cases and presenters
-- Converts domain/infrastructure data into UI-ready view models
-
-### Infrastructure Layer
-
-- Implements repository contracts
-- Currently provides an in-memory dataset for marketplace content
-
-### Presentation Layer
-
-- Route pages, layout, UI components, hooks
-- Consumes application-layer outputs only
-
-## Pages
-
-- `/` Home: hero, trust signals, featured services
-- `/services` Full service catalog with pricing and ratings
-- `/how-it-works` booking flow and platform model
-- `/about` architecture principles and category snapshot
+- Service and page data is defined in:
+  - `src/components/data/marketplaceData.ts`
+- The UI consumes this through:
+  - `src/components/hooks/useMarketplaceSnapshot.ts`
+- Service cards render image + essential metadata only:
+  - category, title, starting price, rating, turnaround
 
 ## Getting Started
 
@@ -109,25 +84,29 @@ npm run lint
 ## Scripts
 
 - `npm run dev` - start Vite dev server
-- `npm run build` - run TypeScript build and Vite production bundle
-- `npm run lint` - run ESLint across the project
+- `npm run build` - create production build
+- `npm run lint` - run ESLint checks
 - `npm run preview` - preview production build locally
 
-## Design Goals
+## Deployment (Vercel)
 
-- Keep content readable by splitting concerns across focused pages
-- Prioritize clarity: strong hierarchy, spacing, and visual breathing room
-- Use reusable components instead of page-level duplication
-- Maintain structure suitable for scaling into real booking flows
+This project includes `vercel.json` with SPA rewrite support:
 
-## Roadmap
+- all routes rewrite to `index.html`
+- direct URL visits like `/services` work correctly after deployment
 
-- Authentication and role-based flows (customer/provider)
-- Service booking form with validation and scheduling
-- Provider dashboard and booking management
-- API-backed repository implementation
-- Test coverage for use cases and critical UI paths
+Deploy steps:
+
+1. Push repository to GitHub.
+2. Import project in Vercel.
+3. Use default settings (`Framework Preset: Vite`).
+4. Deploy.
+
+## Notes
+
+- Service images are currently high resolution. If performance is a priority, compress assets before production launch.
+- Tailwind is configured, but the current UI styling is primarily in `src/index.css`.
 
 ## License
 
-This project is currently unlicensed. Add a `LICENSE` file before public distribution.
+This repository is currently unlicensed. Add a `LICENSE` file before public distribution.
