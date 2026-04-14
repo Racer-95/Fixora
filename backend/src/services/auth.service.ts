@@ -1,34 +1,89 @@
+// ─────────────────────────────────────────────
+//  FIXORA — Auth Service  (MODIFIED)
+//
+//  PATTERN: Service Layer + Singleton
+//  Now uses UserFactory (Factory Pattern) for registration
+//  and userRepository (Repository Pattern) for login.
+//  Implements IAuthService interface contract.
+// ─────────────────────────────────────────────
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { User } from "../models/user.model.js";
+import { userRepository } from "../repositories/user.repository.js";
+import { UserFactory } from "../patterns/user.factory.js";
+import type { RegisterDTO, LoginDTO, AuthResponseDTO } from "../types/dto.types.js";
 
-class AuthService {
-  async register(name: string, email: string, password: string) {
-    const existing = await User.findOne({ email });
-    if (existing) throw new Error("User exists");
+// ── Service Contract ──────────────────────────
+interface IAuthService {
+  register(data: RegisterDTO): Promise<AuthResponseDTO>;
+  login(data: LoginDTO): Promise<AuthResponseDTO>;
+  authenticate(token: string): Promise<{ id: string; role: string }>;
+}
 
-    const hashed = await bcrypt.hash(password, 10);
+// ── Service Implementation ────────────────────
+class AuthService implements IAuthService {
+  
+  /**
+   * Register — delegates creation to UserFactory.
+   * Factory picks Customer / Provider / Admin discriminator.
+   */
+  async register(data: RegisterDTO): Promise<AuthResponseDTO> {
+    const exists = await userRepository.exists({ email: data.email.toLowerCase() });
+    if (exists) throw new Error("An account with this email already exists.");
 
-    const user = await User.create({ name, email, password: hashed });
+    // Factory Pattern — correct user sub-type created here
+    const { user, role } = await UserFactory.create(data);
 
-    return this.generateToken(user._id.toString());
+    const token = this.generateToken(user._id.toString(), role);
+
+    return {
+      success: true,
+      token,
+      user: { id: user._id.toString(), name: user.name, email: user.email, role },
+    };
   }
 
-  async login(email: string, password: string) {
-    const user = await User.findOne({ email });
-    if (!user) throw new Error("Invalid credentials");
+  /**
+   * Login — uses Repository to find user, bcrypt to verify.
+   */
+  async login(data: LoginDTO): Promise<AuthResponseDTO> {
+    const user = await userRepository.findByEmail(data.email);
+    if (!user) throw new Error("Invalid email or password.");
 
-    const match = await bcrypt.compare(password, user.password || "");
-    if (!match) throw new Error("Invalid credentials");
+    const match = await bcrypt.compare(data.password, user.password);
+    if (!match) throw new Error("Invalid email or password.");
 
-    return this.generateToken(user._id.toString());
+    const token = this.generateToken(user._id.toString(), user.role);
+
+    return {
+      success: true,
+      token,
+      user: { id: user._id.toString(), name: user.name, email: user.email, role: user.role },
+    };
   }
 
-  private generateToken(userId: string) {
-    return jwt.sign({ id: userId }, process.env.JWT_SECRET!, {
-      expiresIn: "1d",
-    });
+  /**
+   * AuthService.authenticate() — verifies JWT and returns payload.
+   * Used by AuthMiddleware and other services.
+   * Implements the "authenticate()" method from UML AuthService.
+   */
+  async authenticate(token: string): Promise<{ id: string; role: string }> {
+    try {
+      const payload = jwt.verify(token, process.env.JWT_SECRET!) as { id: string; role: string };
+      return payload;
+    } catch {
+      throw new Error("Token is invalid or expired.");
+    }
+  }
+
+  /** Private — generates signed JWT with id + role in payload */
+  private generateToken(userId: string, role: string): string {
+    return jwt.sign(
+      { id: userId, role },
+      process.env.JWT_SECRET!,
+      { expiresIn: "7d" }
+    );
   }
 }
 
-export const authService = new AuthService(); // singleton
+// Singleton export — shared across app (one instance)
+export const authService = new AuthService();

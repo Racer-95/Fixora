@@ -1,42 +1,40 @@
+// ─────────────────────────────────────────────
+//  FIXORA — Auth Middleware  (MODIFIED)
+//  Now attaches typed { id, role } to request.
+//  Uses authService.authenticate() — AuthService from UML.
+// ─────────────────────────────────────────────
 import type { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import { authService } from "../services/auth.service.js";
+import type { UserRole } from "../types/entities.types.js";
 
-interface JwtPayload {
-  id: string;
+// Extend Express Request with typed user
+declare global {
+  namespace Express {
+    interface Request {
+      user?: { id: string; role: UserRole };
+    }
+  }
 }
 
-export const authMiddleware = (
+export const authMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   try {
-    // 1. Get token from header
     const authHeader = req.headers.authorization;
-
-    if (!authHeader) {
-      return res.status(401).json({ message: "No token provided" });
+    if (!authHeader?.startsWith("Bearer ")) {
+      res.status(401).json({ success: false, message: "No token provided." });
+      return;
     }
 
-    // Format: Bearer token
     const token = authHeader.split(" ")[1];
+    // Delegates to AuthService.authenticate() — from UML AuthService
+    const payload = await authService.authenticate(token);
 
-    if (!token) {
-      return res.status(401).json({ message: "Invalid token format" });
-    }
-
-    // 2. Verify token
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET!
-    ) as JwtPayload;
-
-    // 3. Attach user to request
-    (req as any).user = decoded;
-
-    // 4. Continue
+    req.user = payload as { id: string; role: UserRole };
     next();
-  } catch (error) {
-    return res.status(401).json({ message: "Unauthorized" });
+  } catch (err: any) {
+    res.status(401).json({ success: false, message: "Unauthorized." });
   }
 };

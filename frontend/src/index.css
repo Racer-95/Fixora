@@ -8,18 +8,40 @@
   font-family: 'Manrope', sans-serif;
   color: #182433;
   background:
-    radial-gradient(circle at 8% 8%, #fef4df 0%, transparent 36%),
-    radial-gradient(circle at 85% 0%, #e6f7f3 0%, transparent 32%),
-    #f7fafc;
+    radial-gradient(circle at 8% 8%, #e0f2fe 0%, transparent 40%),
+    radial-gradient(circle at 92% 5%, #fae8ff 0%, transparent 40%),
+    radial-gradient(circle at 50% 90%, #f0fdf4 0%, transparent 40%),
+    #f8fafc;
   --ink-1: #182433;
   --ink-2: #4f6478;
-  --line: #d9e4ee;
-  --surface: #ffffff;
-  --surface-muted: #f2f6fa;
-  --accent: #147f76;
+  --line: rgba(217, 228, 238, 0.5);
+  --surface: rgba(255, 255, 255, 0.7);
+  --accent: #0ea5e9;
   --accent-2: #f39a55;
-  --shadow-soft: 0 16px 38px rgba(24, 36, 51, 0.08);
+  --shadow-soft: 0 16px 38px rgba(24, 36, 51, 0.05);
 }
+
+.glass {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #182433 0%, #0ea5e9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 
 * {
   box-sizing: border-box;

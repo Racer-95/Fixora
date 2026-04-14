@@ -1,25 +1,19 @@
-import jwt from "jsonwebtoken";
-export const authMiddleware = (req, res, next) => {
+import { authService } from "../services/auth.service.js";
+export const authMiddleware = async (req, res, next) => {
     try {
-        // 1. Get token from header
         const authHeader = req.headers.authorization;
-        if (!authHeader) {
-            return res.status(401).json({ message: "No token provided" });
+        if (!authHeader?.startsWith("Bearer ")) {
+            res.status(401).json({ success: false, message: "No token provided." });
+            return;
         }
-        // Format: Bearer token
         const token = authHeader.split(" ")[1];
-        if (!token) {
-            return res.status(401).json({ message: "Invalid token format" });
-        }
-        // 2. Verify token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        // 3. Attach user to request
-        req.user = decoded;
-        // 4. Continue
+        // Delegates to AuthService.authenticate() — from UML AuthService
+        const payload = await authService.authenticate(token);
+        req.user = payload;
         next();
     }
-    catch (error) {
-        return res.status(401).json({ message: "Unauthorized" });
+    catch (err) {
+        res.status(401).json({ success: false, message: "Unauthorized." });
     }
 };
 //# sourceMappingURL=auth.middleware.js.map

@@ -1,69 +1,44 @@
-import mongoose from "mongoose";
-export declare const User: mongoose.Model<{
-    role: string;
-    name?: string | null;
-    password?: string | null;
-    email?: string | null;
-}, {}, {}, {
-    id: string;
-}, mongoose.Document<unknown, {}, {
-    role: string;
-    name?: string | null;
-    password?: string | null;
-    email?: string | null;
-}, {
-    id: string;
-}, mongoose.DefaultSchemaOptions> & Omit<{
-    role: string;
-    name?: string | null;
-    password?: string | null;
-    email?: string | null;
-} & {
+import mongoose, { Document } from "mongoose";
+import type { UserRole } from "../types/entities.types.js";
+export interface IUserDocument extends Document {
+    name: string;
+    email: string;
+    password: string;
+    role: UserRole;
+    createdAt: Date;
+}
+export interface IProviderDocument extends IUserDocument {
+    skills: string[];
+    rating: number;
+    availability: boolean;
+    isApproved: boolean;
+}
+export declare const User: mongoose.Model<IUserDocument, {}, {}, {}, mongoose.Document<unknown, {}, IUserDocument, {}, mongoose.DefaultSchemaOptions> & IUserDocument & Required<{
     _id: mongoose.Types.ObjectId;
-} & {
+}> & {
     __v: number;
-}, "id"> & {
+} & {
     id: string;
-}, mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, {
-    role: string;
-    name?: string | null;
-    password?: string | null;
-    email?: string | null;
-}, mongoose.Document<unknown, {}, {
-    role: string;
-    name?: string | null;
-    password?: string | null;
-    email?: string | null;
-}, {
+}, any, IUserDocument>;
+export declare const Customer: mongoose.Model<IUserDocument, {}, {}, {}, mongoose.Document<unknown, {}, IUserDocument, {}, mongoose.DefaultSchemaOptions> & IUserDocument & Required<{
+    _id: mongoose.Types.ObjectId;
+}> & {
+    __v: number;
+} & {
     id: string;
-}, mongoose.DefaultSchemaOptions> & Omit<{
-    role: string;
-    name?: string | null;
-    password?: string | null;
-    email?: string | null;
-} & {
+}, any, IUserDocument>;
+export declare const Provider: mongoose.Model<IProviderDocument, {}, {}, {}, mongoose.Document<unknown, {}, IProviderDocument, {}, mongoose.DefaultSchemaOptions> & IProviderDocument & Required<{
     _id: mongoose.Types.ObjectId;
-} & {
+}> & {
     __v: number;
-}, "id"> & {
+} & {
     id: string;
-}, unknown, {
-    role: string;
-    name?: string | null;
-    password?: string | null;
-    email?: string | null;
-} & {
+}, any, IProviderDocument>;
+export declare const Admin: mongoose.Model<IUserDocument, {}, {}, {}, mongoose.Document<unknown, {}, IUserDocument, {}, mongoose.DefaultSchemaOptions> & IUserDocument & Required<{
     _id: mongoose.Types.ObjectId;
-} & {
+}> & {
     __v: number;
-}>, {
-    role: string;
-    name?: string | null;
-    password?: string | null;
-    email?: string | null;
 } & {
-    _id: mongoose.Types.ObjectId;
-} & {
-    __v: number;
-}>;
+    id: string;
+}, any, IUserDocument>;
 //# sourceMappingURL=user.model.d.ts.map
