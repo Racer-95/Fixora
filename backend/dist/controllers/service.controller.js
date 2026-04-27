@@ -1,11 +1,25 @@
 import { serviceOfferingService } from "../services/service.service.js";
 const param = (v) => (Array.isArray(v) ? v[0] : v);
-/** GET /api/services?q=plumbing — Customer.searchService(type) */
 export const searchServices = async (req, res) => {
     try {
         const query = req.query["q"] ?? "";
         const services = await serviceOfferingService.search(query);
         res.json({ success: true, data: services });
+    }
+    catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+};
+/** GET /api/services/:id — Fetch a single service by ID */
+export const getServiceById = async (req, res) => {
+    try {
+        const { serviceRepository } = await import("../repositories/service.repository.js");
+        const service = await serviceRepository.findById(param(req.params["id"]));
+        if (!service) {
+            res.status(404).json({ success: false, message: "Service not found" });
+            return;
+        }
+        res.json({ success: true, data: service });
     }
     catch (err) {
         res.status(400).json({ success: false, error: err.message });

@@ -28,7 +28,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
           {service.category}
         </div>
         <div className="absolute bottom-3 right-3 bg-brand-500 text-white px-3 py-1 rounded-full text-sm font-black shadow-lg">
-          ${service.basePrice}
+          ₹{service.basePrice}
         </div>
       </div>
 
@@ -37,15 +37,22 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
           {service.name}
         </h3>
         
+        <div className="text-sm font-bold text-ink-2 mb-2">
+          By {typeof service.providerId === 'object' ? service.providerId.name : 'Unknown Provider'}
+        </div>
         <div className="flex items-center gap-4 mb-4 text-sm text-ink-2 font-medium">
           <div className="flex items-center gap-1">
             <Star size={14} className="text-accent-orange fill-accent-orange" />
-            <span className="text-ink-1 font-bold">{service.rating || 4.8}</span>
-            <span>({service.reviewsCount || 120})</span>
+            <span className="text-ink-1 font-bold">
+              {typeof service.providerId === 'object' ? (service.providerId.rating || 4.8) : (service.rating || 4.8)}
+            </span>
+            <span>({service.reviewsCount || 0})</span>
           </div>
           <div className="flex items-center gap-1">
             <MapPin size={14} />
-            <span>2.4 km</span>
+            <span className="truncate">
+              {service.city || 'Remote'}
+            </span>
           </div>
         </div>
 

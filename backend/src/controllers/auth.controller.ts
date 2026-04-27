@@ -26,6 +26,25 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+import { userRepository } from "../repositories/user.repository.js";
+
 export const getProfile = async (req: Request, res: Response): Promise<void> => {
-  res.json({ success: true, data: req.user });
+  try {
+    const user = await userRepository.findById(req.user!.id);
+    if (!user) {
+      res.status(404).json({ success: false, message: "User not found." });
+      return;
+    }
+    res.json({ 
+      success: true, 
+      data: { 
+        _id: user._id.toString(), 
+        name: user.name, 
+        email: user.email, 
+        role: user.role 
+      } 
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 };

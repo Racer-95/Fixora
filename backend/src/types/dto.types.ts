@@ -26,7 +26,7 @@ export interface AuthResponseDTO {
   success: boolean;
   token: string;
   user: {
-    id: string;
+    _id: string;
     name: string;
     email: string;
     role: UserRole;
@@ -55,16 +55,14 @@ export interface CreateServiceDTO {
   name: string;
   category: string;
   basePrice: number;
-  latitude: number;
-  longitude: number;
+  city: string;
 }
 
 export interface UpdateServiceDTO {
   name?: string;
   category?: string;
   basePrice?: number;
-  latitude?: number;
-  longitude?: number;
+  city?: string;
 }
 
 // ── Review ────────────────────────────────────

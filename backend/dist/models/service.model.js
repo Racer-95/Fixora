@@ -13,10 +13,7 @@ const serviceSchema = new Schema({
     name: { type: String, required: true, trim: true },
     category: { type: String, required: true, trim: true },
     basePrice: { type: Number, required: true, min: 0 },
-    location: {
-        latitude: { type: Number, required: true },
-        longitude: { type: Number, required: true },
-    },
+    city: { type: String, required: true, trim: true },
 }, { timestamps: true });
 // ── Index for search by category ──────────────
 serviceSchema.index({ category: 1 });

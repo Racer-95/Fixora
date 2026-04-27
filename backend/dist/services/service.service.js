@@ -16,10 +16,7 @@ class ServiceOfferingService {
             name: data.name,
             category: data.category,
             basePrice: data.basePrice,
-            location: {
-                latitude: data.latitude,
-                longitude: data.longitude,
-            },
+            city: data.city,
         });
     }
     /** Customer: searchService(type) — search by category or keyword */
@@ -44,9 +41,8 @@ class ServiceOfferingService {
             updatePayload.category = data.category;
         if (data.basePrice)
             updatePayload.basePrice = data.basePrice;
-        if (data.latitude !== undefined && data.longitude !== undefined) {
-            updatePayload.location = { latitude: data.latitude, longitude: data.longitude };
-        }
+        if (data.city)
+            updatePayload.city = data.city;
         const updated = await serviceRepository.updateById(serviceId, updatePayload);
         return updated;
     }

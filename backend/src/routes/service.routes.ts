@@ -9,6 +9,7 @@ import {
   createService,
   updateService,
   deleteService,
+  getServiceById,
 } from "../controllers/service.controller.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 import { roleGuard } from "../middleware/role.middleware.js";
@@ -17,6 +18,7 @@ const router = Router();
 
 // Public: Customer.searchService(type)
 router.get("/", searchServices);
+router.get("/:id", getServiceById);
 
 // Protected provider routes
 router.get( "/mine",  authMiddleware, roleGuard("provider"), getMyServices);

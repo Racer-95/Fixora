@@ -38,7 +38,7 @@ class AuthService implements IAuthService {
     return {
       success: true,
       token,
-      user: { id: user._id.toString(), name: user.name, email: user.email, role },
+      user: { _id: user._id.toString(), name: user.name, email: user.email, role },
     };
   }
 
@@ -57,7 +57,7 @@ class AuthService implements IAuthService {
     return {
       success: true,
       token,
-      user: { id: user._id.toString(), name: user.name, email: user.email, role: user.role },
+      user: { _id: user._id.toString(), name: user.name, email: user.email, role: user.role },
     };
   }
 

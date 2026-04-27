@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
-/** GET /api/services?q=plumbing — Customer.searchService(type) */
 export declare const searchServices: (req: Request, res: Response) => Promise<void>;
+/** GET /api/services/:id — Fetch a single service by ID */
+export declare const getServiceById: (req: Request, res: Response) => Promise<void>;
 /** GET /api/services/mine — Provider's own services */
 export declare const getMyServices: (req: Request, res: Response) => Promise<void>;
 /** POST /api/services — Service.createService() */

@@ -1,20 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, CreditCard, ChevronRight, CheckCircle2, MapPin } from 'lucide-react';
 import Button from '../components/ui/Button';
-import { Link } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 const STEPS = ['Schedule', 'Details', 'Payment'];
 
 const BookingFlowPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [service, setService] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const nextStep = () => {
+  useEffect(() => {
+    const fetchService = async () => {
+      try {
+        const res = await api.get(`/services/${id}`);
+        if (res.data.success) {
+          setService(res.data.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch service', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchService();
+  }, [id]);
+
+  const nextStep = async () => {
     if (currentStep < STEPS.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      setIsCompleted(true);
+      try {
+        const res = await api.post('/bookings', {
+          providerId: service.providerId,
+          serviceId: service._id,
+          scheduledTime: new Date().toISOString()
+        });
+        if (res.data.success) {
+          setIsCompleted(true);
+        }
+      } catch (err) {
+        console.error('Failed to create booking', err);
+        alert('Failed to create booking. Please try again.');
+      }
     }
   };
 
@@ -50,6 +83,14 @@ const BookingFlowPage: React.FC = () => {
         </motion.div>
       </div>
     );
+  }
+
+  if (loading) {
+    return <div className="min-h-[70vh] flex items-center justify-center text-ink-2">Loading booking details...</div>;
+  }
+
+  if (!service) {
+    return <div className="min-h-[70vh] flex items-center justify-center text-ink-2">Service not found.</div>;
   }
 
   return (
@@ -190,37 +231,35 @@ const BookingFlowPage: React.FC = () => {
             <div className="glass-panel p-8 rounded-[2.5rem] bg-brand-50/30">
               <h3 className="text-xl font-black text-ink-1 mb-6">Order Summary</h3>
               <div className="flex gap-4 mb-6 pb-6 border-b border-line">
-                <img 
-                  src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=200" 
-                  alt="Service" 
-                  className="w-20 h-20 rounded-2xl object-cover"
-                />
+                <div className="w-20 h-20 rounded-2xl bg-brand-500/10 flex items-center justify-center text-brand-500">
+                  <CheckCircle2 size={32} />
+                </div>
                 <div>
-                  <h4 className="font-bold text-ink-1">Deep Cleaning</h4>
-                  <div className="text-sm text-ink-2 font-medium">Home & Living</div>
-                  <div className="text-brand-600 font-bold mt-1">$85.00</div>
+                  <h4 className="font-bold text-ink-1">{service.name}</h4>
+                  <div className="text-sm text-ink-2 font-medium">{service.category}</div>
+                  <div className="text-brand-600 font-bold mt-1">₹{service.basePrice}</div>
                 </div>
               </div>
               
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between font-medium text-ink-2">
                   <span>Service Fee</span>
-                  <span>$85.00</span>
+                  <span>₹{service.basePrice}</span>
                 </div>
                 <div className="flex justify-between font-medium text-ink-2">
                   <span>Booking Fee</span>
-                  <span>$5.00</span>
+                  <span>₹0.00</span>
                 </div>
                 <div className="flex justify-between font-medium text-ink-2">
                   <span>Tax</span>
-                  <span>$2.50</span>
+                  <span>₹0.00</span>
                 </div>
               </div>
 
               <div className="flex justify-between items-end border-t border-line pt-6">
                 <div>
                   <div className="text-sm font-black text-ink-2 uppercase tracking-wider mb-1">Total</div>
-                  <div className="text-3xl font-black text-brand-600">$92.50</div>
+                  <div className="text-3xl font-black text-brand-600">₹{service.basePrice}</div>
                 </div>
                 <div className="mb-1">
                   <span className="bg-brand-100 text-brand-700 px-3 py-1 rounded-full text-xs font-black">SAVE10 ACTIVE</span>

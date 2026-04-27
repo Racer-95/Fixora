@@ -4,10 +4,7 @@ export interface IServiceDocument extends Document {
     name: string;
     category: string;
     basePrice: number;
-    location: {
-        latitude: number;
-        longitude: number;
-    };
+    city: string;
     createdAt: Date;
     updatedAt: Date;
 }

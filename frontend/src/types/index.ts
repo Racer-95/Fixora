@@ -1,17 +1,12 @@
 export type UserRole = "customer" | "provider" | "admin";
 
-export interface ILocation {
-  latitude: number;
-  longitude: number;
-}
-
 export interface IService {
   _id: string;
-  providerId: string;
+  providerId: string | { _id: string; name: string; rating?: number; availability?: boolean };
   name: string;
   category: string;
   basePrice: number;
-  location: ILocation;
+  city: string;
   createdAt: Date;
   rating?: number;
   reviewsCount?: number;

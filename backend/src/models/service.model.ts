@@ -10,10 +10,7 @@ export interface IServiceDocument extends Document {
   name:       string;
   category:   string;
   basePrice:  number;
-  location: {
-    latitude:  number;
-    longitude: number;
-  };
+  city:       string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -28,10 +25,7 @@ const serviceSchema = new Schema<IServiceDocument>(
     name:     { type: String, required: true, trim: true },
     category: { type: String, required: true, trim: true },
     basePrice:{ type: Number, required: true, min: 0 },
-    location: {
-      latitude:  { type: Number, required: true },
-      longitude: { type: Number, required: true },
-    },
+    city:     { type: String, required: true, trim: true },
   },
   { timestamps: true }
 );
