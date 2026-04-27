@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Search, SlidersHorizontal, MapPin } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 
 import ServiceCard from '../components/ui/ServiceCard';
 import type { IService } from '../types/index';
 import Button from '../components/ui/Button';
 import api from '../services/api';
 
-const CATEGORIES = ['All', 'Cleaning', 'Electrical', 'Plumbing', 'Painting', 'Gardening', 'Repair'];
+const CATEGORIES = ['All', 'Cleaning', 'Electrical', 'Plumbing', 'Painting', 'Gardening', 'Repair', 'Barber', 'Beauty'];
 
 const INDIAN_CITIES = [
   'Delhi, Delhi',
@@ -23,10 +24,11 @@ const INDIAN_CITIES = [
 ] as const;
 
 const ServicesListingPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
   const [services, setServices] = useState<IService[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(() => searchParams.get('category') || 'All');
+  const [searchQuery, setSearchQuery] = useState(() => searchParams.get('q') || '');
   const [selectedCity, setSelectedCity] = useState<(typeof INDIAN_CITIES)[number]>(INDIAN_CITIES[0]);
 
   useEffect(() => {
@@ -48,7 +50,8 @@ const ServicesListingPage: React.FC = () => {
   const filteredServices = services.filter(service => {
     const matchesCategory = selectedCategory === 'All' || service.category === selectedCategory;
     const matchesSearch = service.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    const matchesCity = !selectedCity || (service.city || '').toLowerCase().includes(selectedCity.split(',')[0].toLowerCase());
+    return matchesCategory && matchesSearch && matchesCity;
   });
 
   return (

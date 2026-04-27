@@ -1,50 +1,99 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Search, ShieldCheck, Zap, Heart } from 'lucide-react';
+import { ShieldCheck, Zap, Heart, Sparkles, Wrench, Droplets, Paintbrush, Leaf, Scissors, Star, ArrowRight, Home, Truck, Bug, Shield } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Button from '../components/ui/Button';
-import ServiceCard from '../components/ui/ServiceCard';
-import type { IService } from '../types/index';
 
-const MOCK_SERVICES: IService[] = [
+const SERVICE_CATEGORIES = [
   {
-    _id: '1',
-    providerId: 'p1',
-    name: 'Professional Deep Cleaning',
-    category: 'Cleaning',
-    basePrice: 85,
-    location: { latitude: 0, longitude: 0 },
-    createdAt: new Date(),
-    rating: 4.9,
-    reviewsCount: 230,
-    imageUrl: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800'
+    name: 'Cleaning',
+    icon: Sparkles,
+    desc: 'Deep clean & sanitize',
+    image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800',
+    color: 'from-blue-500/80',
   },
   {
-    _id: '2',
-    providerId: 'p2',
-    name: 'Expert Electrical Repair',
-    category: 'Electrical',
-    basePrice: 60,
-    location: { latitude: 0, longitude: 0 },
-    createdAt: new Date(),
-    rating: 4.8,
-    reviewsCount: 156,
-    imageUrl: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800'
+    name: 'Electrical',
+    icon: Zap,
+    desc: 'Wiring, fixtures & more',
+    image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800',
+    color: 'from-yellow-500/80',
   },
   {
-    _id: '3',
-    providerId: 'p3',
-    name: 'Master Plumbing Solutions',
-    category: 'Plumbing',
-    basePrice: 75,
-    location: { latitude: 0, longitude: 0 },
-    createdAt: new Date(),
-    rating: 4.7,
-    reviewsCount: 89,
-    imageUrl: 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?auto=format&fit=crop&q=80&w=800'
-  }
+    name: 'Plumbing',
+    icon: Droplets,
+    desc: 'Pipes, leaks & drains',
+    image: 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?auto=format&fit=crop&q=80&w=800',
+    color: 'from-cyan-500/80',
+  },
+  {
+    name: 'Painting',
+    icon: Paintbrush,
+    desc: 'Interior & exterior',
+    image: 'https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&q=80&w=800',
+    color: 'from-orange-500/80',
+  },
+  {
+    name: 'Gardening',
+    icon: Leaf,
+    desc: 'Lawn care & landscaping',
+    image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&q=80&w=800',
+    color: 'from-green-500/80',
+  },
+  {
+    name: 'Repair',
+    icon: Wrench,
+    desc: 'Home & appliance fixes',
+    image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6954?auto=format&fit=crop&q=80&w=800',
+    color: 'from-red-500/80',
+  },
+  {
+    name: 'Barber',
+    icon: Scissors,
+    desc: 'Haircut & grooming',
+    image: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=800',
+    color: 'from-purple-500/80',
+  },
+  {
+    name: 'Beauty',
+    icon: Star,
+    desc: 'Salon & spa at home',
+    image: 'https://images.unsplash.com/photo-1560066984-138daaa4e5d7?auto=format&fit=crop&q=80&w=800',
+    color: 'from-pink-500/80',
+  },
+  {
+    name: 'Carpentry',
+    icon: Home,
+    desc: 'Furniture & woodwork',
+    image: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&q=80&w=800',
+    color: 'from-amber-700/80',
+  },
+  {
+    name: 'Moving',
+    icon: Truck,
+    desc: 'Packing & relocation',
+    image: 'https://images.unsplash.com/photo-1600518464441-9154a4dea21b?auto=format&fit=crop&q=80&w=800',
+    color: 'from-indigo-500/80',
+  },
+  {
+    name: 'Pest',
+    icon: Bug,
+    desc: 'Control & prevention',
+    image: 'https://images.unsplash.com/photo-1626863905121-3b0c0ed7b94c?auto=format&fit=crop&q=80&w=800',
+    color: 'from-lime-600/80',
+  },
+  {
+    name: 'Security',
+    icon: Shield,
+    desc: 'CCTV & alarm setup',
+    image: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&q=80&w=800',
+    color: 'from-slate-600/80',
+  },
 ];
 
+
 const HomePage: React.FC = () => {
+
   return (
     <div className="flex flex-col gap-20">
       {/* Hero Section */}
@@ -67,19 +116,7 @@ const HomePage: React.FC = () => {
                 Book professional local services in seconds. From plumbing to painting, we've got the experts you need.
               </p>
               
-              <div className="glass-panel p-2 rounded-2xl flex flex-col sm:flex-row gap-2 max-w-xl">
-                <div className="flex-1 flex items-center px-4 gap-3 bg-surface-muted/50 rounded-xl">
-                  <Search size={20} className="text-ink-2" />
-                  <input 
-                    type="text" 
-                    placeholder="What service do you need?" 
-                    className="w-full py-4 bg-transparent focus:outline-none font-medium text-ink-1"
-                  />
-                </div>
-                <Button variant="primary" size="lg" className="rounded-xl">
-                  Get Started
-                </Button>
-              </div>
+
             </motion.div>
 
             <motion.div 
@@ -131,20 +168,56 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Featured Services */}
+      {/* Service Categories */}
       <section className="px-6 py-10">
         <div className="mx-auto max-w-7xl">
           <div className="flex items-end justify-between mb-12">
             <div>
-              <h2 className="text-4xl font-black text-ink-1 mb-4">Popular Services</h2>
-              <p className="text-ink-2 font-medium">Handpicked professionals for your home needs.</p>
+              <h2 className="text-4xl font-black text-ink-1 mb-3">Our <span className="text-gradient">Services</span></h2>
+              <p className="text-ink-2 font-medium">Everything your home needs, all in one place.</p>
             </div>
-            <Button variant="secondary" className="hidden sm:flex">View All</Button>
+            <Link to="/services">
+              <Button variant="secondary" className="hidden sm:flex items-center gap-2">
+                View All <ArrowRight size={16} />
+              </Button>
+            </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {MOCK_SERVICES.map(service => (
-              <ServiceCard key={service._id} service={service} />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+            {SERVICE_CATEGORIES.map((cat, i) => (
+              <motion.div
+                key={cat.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                whileHover={{ y: -6, scale: 1.02 }}
+              >
+                <Link
+                  to={`/services?category=${cat.name}`}
+                  className="block relative rounded-3xl overflow-hidden aspect-[4/3] group cursor-pointer shadow-md hover:shadow-xl transition-shadow duration-300"
+                >
+                  {/* Background image */}
+                  <img
+                    src={cat.image}
+                    alt={cat.name}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  {/* Gradient overlay */}
+                  <div className={`absolute inset-0 bg-gradient-to-t ${cat.color} to-transparent opacity-80`} />
+
+                  {/* Content */}
+                  <div className="absolute inset-0 flex flex-col justify-end p-4">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-8 h-8 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center text-white">
+                        <cat.icon size={16} />
+                      </div>
+                      <h3 className="font-black text-white text-lg leading-tight">{cat.name}</h3>
+                    </div>
+                    <p className="text-white/80 text-xs font-medium">{cat.desc}</p>
+                  </div>
+                </Link>
+              </motion.div>
             ))}
           </div>
         </div>

@@ -456,6 +456,9 @@ const ProviderDashboard: React.FC<{ user: IUser | null }> = ({ user }) => {
                           <option value="Painting">Painting</option>
                           <option value="Gardening">Gardening</option>
                           <option value="Repair">Repair</option>
+                          <option value="Barber">Barber</option>
+                          <option value="Beauty">Beauty</option>  
+                        
                         </select>
                       </div>
                       <div>
