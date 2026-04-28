@@ -267,6 +267,5 @@ curl http://localhost:5005/api/auth/profile \
 - Add API rate limiting, input validation, and centralized request validation layer
 - Add Docker setup and CI pipeline for consistent deployments
 
-## License
-
-No license file is currently present in this repository. Add one (for example, MIT) before public distribution.
+## Report
+link - https://docs.google.com/document/d/1gYIOTdsuSGpbJsAf5az-bfGX_20RrBJm8Hu2dYHmnfs/edit?tab=t.0
