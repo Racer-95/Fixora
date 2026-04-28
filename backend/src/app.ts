@@ -10,7 +10,11 @@ import routes from "./routes/index.js";
 const app = express();
 
 // ── Global Middleware ─────────────────────────
-app.use(cors());
+app.use(cors({
+  origin: "*", // Allows all origins for now. Can be restricted to specific URLs in the future.
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(express.json());
 
 // ── API Routes ────────────────────────────────

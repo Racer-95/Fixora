@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────
 //  FIXORA — Booking Event Emitter
 //
-//  PATTERN: Template Pattern (via Node.js EventEmitter)
+//  PATTERN: Observer Pattern (via Node.js EventEmitter)
 //  PURPOSE: Decouples side-effects from core booking logic.
 //           When a booking changes state, BookingEvents
 //           emits a typed event. Observers (listeners)

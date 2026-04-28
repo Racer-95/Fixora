@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5005/api',
+  baseURL: window.location.hostname === 'localhost' 
+    ? 'http://localhost:5005/api' 
+    : 'https://fixora-1q9m.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
